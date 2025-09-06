@@ -5,21 +5,20 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".RegisterActivity"
     android:orientation="vertical"
-
     android:gravity="center_horizontal"
     android:paddingStart="24dp"
     android:paddingEnd="24dp"
     android:background="@color/deepPurple">
 
     <ImageView
-        android:id="@+id/IvAppLogo"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:id="@+id/ivLogoRegister"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:src="@drawable/icono_frutapp"
         android:contentDescription="App logo"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="16dp"/>
 
     <TextView
@@ -32,17 +31,41 @@
         android:layout_marginEnd="24dp"/>
 
     <EditText
-        android:id="@+id/etUserLogIn"
+        android:id="@+id/etUserRegister"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         android:autofillHints="username"
         android:backgroundTint="@color/lightPurple"
         android:hint="Enter your username"
         android:inputType="textPersonName"
+        android:textColorHint="@color/white"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"/>
+
+    <EditText
+        android:id="@+id/etMailRegister"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="12dp"
+        android:autofillHints="emailAddress"
+        android:backgroundTint="@color/lightPurple"
+        android:hint="Enter your email"
+        android:inputType="textEmailAddress"
         android:textColorHint="@color/white"
         android:textSize="15sp" />
 
@@ -58,10 +81,10 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:id="@+id/etPasswordLogIn"
+        android:id="@+id/etPasswordRegister"
         android:textSize="15sp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         android:hint="Enter your password"
         android:inputType="textPassword"
         android:autofillHints="password"
@@ -74,9 +97,9 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Remember me"
-        android:id="@+id/cbRememberUser"
-        android:layout_marginBottom="24dp"
+        android:text="I accept the Terms &amp; Conditions"
+        android:id="@+id/cbTermsConditions"
+        android:layout_marginBottom="16dp"
         android:buttonTint="@color/white"
         android:textColor="@color/white"
         android:textSize="16sp"
@@ -86,8 +109,8 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:id="@+id/btnLogIn"
-        android:text="Log In"
+        android:id="@+id/btnSignUp"
+        android:text="Sign Up"
         android:layout_marginBottom="10dp"
         android:backgroundTint="@color/lightPurple"
         android:textColor="@color/darkPurpleGray"
@@ -96,14 +119,13 @@
         android:layout_marginEnd="24dp"/>
 
     <TextView
-        android:id="@+id/tvDontHaveAccount"
+        android:id="@+id/tvHaveAnAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Don't have an account? Sign Up"
+        android:text="Already have an account? Log in"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         android:textColor="@color/white"
         android:padding="8dp"/>
-
 
 </LinearLayout>

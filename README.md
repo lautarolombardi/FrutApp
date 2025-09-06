@@ -4,9 +4,9 @@
 
 ## Integrantes
 
-    Lombardi Lautaro
-    Torres Rodriguez Lola
-    Pappalardo Marco
+    Lombardi Lautaro [@lautarolombardi](https://github.com/lautarolombardi)
+    Torres Rodriguez Lola [@lolatorresr](https://github.com/lolatorresr)
+    Pappalardo Marco [@MarcoPappalardo1](https://github.com/MarcoPappalardo1)
 
 ## Funcionalidades
 

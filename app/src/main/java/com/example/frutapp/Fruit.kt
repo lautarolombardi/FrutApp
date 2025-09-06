@@ -9,9 +9,9 @@ data class Fruit(
   val order: String,
   val genus: String,
   val emoji: String = when (name) {
-    "Banana" -> ""
-    "Apple" -> ""
-    "Strawberry" -> ""
+    "Banana" -> "🍌"
+    "Apple" -> "🍎"
+    "Strawberry" -> "🍓"
     else -> ""
   },
   val nutritions: Nutritions,

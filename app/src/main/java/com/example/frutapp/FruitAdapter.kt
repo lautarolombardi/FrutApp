@@ -48,7 +48,8 @@ class FruitAdapter(private val list: List<Fruit>) :
       intent.putExtra("sugar", fruit.nutritions.sugar)
       intent.putExtra("protein", fruit.nutritions.protein)
       intent.putExtra("carbohydrates", fruit.nutritions.carbohydrates)
-      intent.putExtra("calories", fruit.nutritions.fat)
+      intent.putExtra("fat", fruit.nutritions.fat)
+      intent.putExtra("calories", fruit.nutritions.calories)
       context.startActivity(intent)
     }
 

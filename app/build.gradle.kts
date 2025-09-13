@@ -1,6 +1,7 @@
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
+  id("kotlin-kapt")
 }
 
 android {
@@ -34,10 +35,16 @@ android {
 
 dependencies {
 
+  val roomVersion = "2.8.0"
+
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
   implementation(libs.material)
+  implementation("androidx.room:room-runtime:$roomVersion")
+  implementation("androidx.room:room-ktx:$roomVersion")
+  kapt("androidx.room:room-compiler:$roomVersion")
   implementation(libs.androidx.activity)
+  implementation("org.mindrot:jbcrypt:0.4")
   implementation(libs.androidx.constraintlayout)
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)

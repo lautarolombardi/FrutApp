@@ -18,7 +18,6 @@ abstract class AppDatabase: RoomDatabase() {
           INSTANCIA = Room.databaseBuilder(
             context,
             AppDatabase::class.java, "frutapp_db")
-            .allowMainThreadQueries()
             .fallbackToDestructiveMigration(false)
             .build()
         }

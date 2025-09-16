@@ -10,12 +10,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.frutapp.data.database.AppDatabase
 import com.example.frutapp.data.entity.User
 import com.example.frutapp.utils.hashPassword
 import com.example.frutapp.utils.isValidEmail
 import com.example.frutapp.utils.isValidPassword
 import com.example.frutapp.utils.isValidUsername
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,22 +63,25 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val existingUser = AppDatabase.getDatabase(applicationContext).userDao().findByEmail(email)
+            lifecycleScope.launch {
+                val existingUser = withContext(Dispatchers.IO) {
+                    AppDatabase.getDatabase(applicationContext).userDao().findByEmail(email)
+                }
 
-            if (existingUser != null) {
-                Toast.makeText(this, "User already exists", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+                if (existingUser != null) {
+                    Toast.makeText(this@RegisterActivity, "User already exists", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                val hashedPass = hashPassword(password)
+
+                withContext(Dispatchers.IO) {
+                    AppDatabase.getDatabase(applicationContext).userDao().insert(User(username, email, hashedPass))
+                }
+
+                Toast.makeText(this@RegisterActivity, "User successfully registered", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
             }
-
-            val hashedPass = hashPassword(password)
-
-            val newUser = User(username, email, hashedPass)
-            AppDatabase.getDatabase(applicationContext).userDao().insert(newUser)
-
-            Toast.makeText(this, "User successfully registered", Toast.LENGTH_SHORT).show()
-
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
         }
 
         val tvReturnLogin = findViewById<TextView>(R.id.tvHaveAnAccount)

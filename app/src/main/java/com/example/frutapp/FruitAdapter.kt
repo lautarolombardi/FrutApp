@@ -8,7 +8,7 @@ import com.example.frutapp.Fruit
 import com.example.frutapp.FruitDetail
 import com.example.frutapp.R
 
-class FruitAdapter(private val list: List<Fruit>) :
+class FruitAdapter(private var list: MutableList<Fruit>) :
   RecyclerView.Adapter<FruitAdapter.ViewHolder>() {
 
   class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -56,4 +56,5 @@ class FruitAdapter(private val list: List<Fruit>) :
   }
 
   override fun getItemCount() = list.size
+
 }

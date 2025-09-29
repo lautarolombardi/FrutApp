@@ -9,16 +9,8 @@
     android:padding="20dp"
     tools:context=".FruitList">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Fruit List"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:textSize="30sp"
-        android:layout_marginBottom="5dp"
-        />
+    <include
+        layout="@layout/toolbar" />
 
     <TextView
         android:layout_width="match_parent"

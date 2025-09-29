@@ -4,10 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -22,6 +24,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class RegisterActivity : AppCompatActivity() {
+
+    private lateinit var usernameEditText: EditText
+    private lateinit var emailEditText: EditText
+    private lateinit var passwordEditText: EditText
+    private lateinit var termsCheckBox: CheckBox
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -32,11 +40,16 @@ class RegisterActivity : AppCompatActivity() {
             insets
         }
 
+        usernameEditText = findViewById(R.id.etUserRegister)
+        emailEditText = findViewById(R.id.etMailRegister)
+        passwordEditText = findViewById(R.id.etPasswordRegister)
+        termsCheckBox = findViewById(R.id.cbTermsConditions)
+
         val btnSignUp = findViewById<Button>(R.id.btnSignUp)
         btnSignUp.setOnClickListener {
-            val username = findViewById<TextView>(R.id.etUserRegister).text.toString()
-            val email = findViewById<TextView>(R.id.etMailRegister).text.toString()
-            val password = findViewById<TextView>(R.id.etPasswordRegister).text.toString()
+            val username = usernameEditText.text.toString()
+            val email = emailEditText.text.toString()
+            val password = passwordEditText.text.toString()
 
             if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show()
@@ -44,21 +57,21 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             if (!isValidUsername(username)){
-                Toast.makeText(this, "Enter a username with at least 8 characters", Toast.LENGTH_SHORT).show()
+                usernameEditText.error = "Enter a username with at least 8 characters"
                 return@setOnClickListener
             }
 
             if (!isValidEmail(email)) {
-                Toast.makeText(this, "Enter a valid email", Toast.LENGTH_SHORT).show()
+                emailEditText.error = "Enter a valid email"
                 return@setOnClickListener
             }
 
             if (!isValidPassword(password)) {
-                Toast.makeText(this, "Password must contain at least 8 characters, one uppercase letter, one number and one special character", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Password must contain at least 8 characters, one uppercase letter, one number and one special character", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
-            if (!findViewById<CheckBox>(R.id.cbTermsConditions).isChecked) {
+            if (!termsCheckBox.isChecked) {
                 Toast.makeText(this, "You must accept the Terms & Conditions", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -76,18 +89,26 @@ class RegisterActivity : AppCompatActivity() {
                 val hashedPass = hashPassword(password)
 
                 withContext(Dispatchers.IO) {
-                    AppDatabase.getDatabase(applicationContext).userDao().insert(User(username, email, hashedPass))
+                    val newUser = User(
+                        username = username,
+                        email = email,
+                        passwordHash = hashedPass
+                    )
+                    AppDatabase.getDatabase(applicationContext).userDao().insert(newUser)
                 }
 
                 Toast.makeText(this@RegisterActivity, "User successfully registered", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
+
+                val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
             }
         }
 
         val tvReturnLogin = findViewById<TextView>(R.id.tvHaveAnAccount)
         tvReturnLogin.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            finish()
         }
     }
 }

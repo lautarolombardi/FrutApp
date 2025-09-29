@@ -2,6 +2,7 @@ package com.example.frutapp
 
 import FruitAdapter
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -119,6 +120,9 @@ class FruitList : AppCompatActivity() {
   }
 
   private fun logOut(){
+    val sharedPrefs = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+    sharedPrefs.edit().remove("username").apply()
+
     val intent = Intent(this, MainActivity::class.java).apply{
       flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }

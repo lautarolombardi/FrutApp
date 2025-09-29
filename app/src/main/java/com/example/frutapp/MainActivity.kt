@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     val password = passwordEditText.text.toString()
 
     if (username.isEmpty() || password.isEmpty()) {
-      Toast.makeText(this, "User and password are requiered", Toast.LENGTH_SHORT).show()
+      Toast.makeText(this, "User and password are required", Toast.LENGTH_SHORT).show()
       return
     }
 

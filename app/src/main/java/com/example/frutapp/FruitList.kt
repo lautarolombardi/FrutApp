@@ -15,10 +15,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.frutapp.data.api.ApiService
+import com.example.frutapp.data.api.RetrofitClient
+import com.example.frutapp.data.model.FruitDTO
+import retrofit2.Call
+import retrofit2.Response
 
 class FruitList : AppCompatActivity() {
   private lateinit var fruitAdapter: FruitAdapter
-  private lateinit var frutas: MutableList<Fruit>
+  private val fruitList = mutableListOf<FruitDTO>()
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
@@ -34,49 +39,26 @@ class FruitList : AppCompatActivity() {
     val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewFruits)
     recyclerView.layoutManager = LinearLayoutManager(this)
 
-    frutas = getFrutas()
-
-    fruitAdapter = FruitAdapter(frutas)
+    fruitAdapter = FruitAdapter(mutableListOf())
     recyclerView.adapter = fruitAdapter
-  }
 
-  private fun getFrutas(): MutableList<Fruit> {
-    val frutas: MutableList<Fruit> = ArrayList()
+    val api = RetrofitClient.retrofit.create(ApiService::class.java)
+    val callGetAllFruits = api.getAllFruits()
 
-    frutas.add(
-      Fruit(
-        id = 1,
-        name = "Banana",
-        family = "Musaceae",
-        genus = "Musa",
-        order = "Zingiberales",
-        nutritions = Nutritions(22.0, 1.1, 0.3, 96, 12.2)
-      )
-    )
+    callGetAllFruits.enqueue(object : retrofit2.Callback<List<FruitDTO>> {
+      override fun onResponse(call: Call<List<FruitDTO>>, response: Response<List<FruitDTO>>) {
+        if (response.isSuccessful) {
+          val fruits = response.body() ?: emptyList()
+          fruitList.clear()
+          fruitList.addAll(fruits)
+          fruitAdapter.updateData(fruits)
+        }
+      }
 
-    frutas.add(
-      Fruit(
-        id = 2,
-        name = "Apple",
-        family = "Rosaceae",
-        genus = "Malus",
-        order = "Rosales",
-        nutritions = Nutritions(13.8, 0.3, 0.2, 52, 10.4)
-      )
-    )
-
-    frutas.add(
-      Fruit(
-        id = 3,
-        name = "Strawberry",
-        family = "Rosaceae",
-        genus = "Fragaria",
-        order = "Rosales",
-        nutritions = Nutritions(7.7, 0.8, 0.3, 33, 4.9)
-      )
-    )
-
-    return frutas
+      override fun onFailure(call: Call<List<FruitDTO>>, t: Throwable) {
+        t.printStackTrace()
+      }
+    })
   }
 
 
@@ -112,12 +94,12 @@ class FruitList : AppCompatActivity() {
     }
   }
 
-  private fun ordenarListaFrutas(){
-    frutas.sortBy { it.name }
-    fruitAdapter.notifyDataSetChanged()
-
+  private fun ordenarListaFrutas() {
+    fruitList.sortBy { it.name }        // ordeno la lista local
+    fruitAdapter.updateData(fruitList)  // actualizo el adapter
     findViewById<RecyclerView>(R.id.recyclerViewFruits).scrollToPosition(0)
   }
+
 
   private fun logOut(){
     val sharedPrefs = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)

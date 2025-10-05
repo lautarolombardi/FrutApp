@@ -2,18 +2,22 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.frutapp.Fruit
 import com.example.frutapp.FruitDetail
 import com.example.frutapp.R
+import com.example.frutapp.data.model.FruitDTO
 
-class FruitAdapter(private var list: MutableList<Fruit>) :
+class FruitAdapter(private var list: MutableList<FruitDTO>) :
   RecyclerView.Adapter<FruitAdapter.ViewHolder>() {
 
   class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    val fruitsIcon: ImageView = view.findViewById(R.id.ivFruitsIcon)
+
     val name: TextView = view.findViewById(R.id.tvName)
-    val emoji: TextView = view.findViewById(R.id.tvEmoji)
+
     val id: TextView = view.findViewById(R.id.tvId)
     val family: TextView = view.findViewById(R.id.tvFamily)
     val order: TextView = view.findViewById(R.id.tvOrder)
@@ -29,7 +33,7 @@ class FruitAdapter(private var list: MutableList<Fruit>) :
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     val fruit = list[position]
-    holder.emoji.text = fruit.emoji
+    holder.fruitsIcon.setImageResource(R.drawable.frutas)
     holder.name.text = fruit.name
     holder.id.text = fruit.id.toString()
     holder.family.text = fruit.family
@@ -44,7 +48,6 @@ class FruitAdapter(private var list: MutableList<Fruit>) :
       intent.putExtra("family", fruit.family)
       intent.putExtra("order", fruit.order)
       intent.putExtra("genus", fruit.genus)
-      intent.putExtra("emoji", fruit.emoji)
       intent.putExtra("sugar", fruit.nutritions.sugar)
       intent.putExtra("protein", fruit.nutritions.protein)
       intent.putExtra("carbohydrates", fruit.nutritions.carbohydrates)
@@ -56,5 +59,11 @@ class FruitAdapter(private var list: MutableList<Fruit>) :
   }
 
   override fun getItemCount() = list.size
+
+  fun updateData(newUsers: List<FruitDTO>) {
+    list.clear()           // limpiamos la lista
+    list.addAll(newUsers)  // agregamos los nuevos datos
+    notifyDataSetChanged()  // notificamos al adapter
+  }
 
 }

@@ -23,12 +23,12 @@
             android:gravity="center"
             android:backgroundTint="@color/deepPurple">
 
-            <TextView
-                android:id="@+id/tvEmoji"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="48sp" />
+            <ImageView
+                android:id="@+id/ivFruitsIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/frutas"
+                android:scaleType="centerInside" />
 
         </LinearLayout>
 

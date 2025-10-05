@@ -2,6 +2,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.frutapp.Fruit
@@ -13,6 +14,8 @@ class FruitAdapter(private var list: MutableList<FruitDTO>) :
   RecyclerView.Adapter<FruitAdapter.ViewHolder>() {
 
   class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    val fruitsIcon: ImageView = view.findViewById(R.id.ivFruitsIcon)
+
     val name: TextView = view.findViewById(R.id.tvName)
 
     val id: TextView = view.findViewById(R.id.tvId)
@@ -30,6 +33,7 @@ class FruitAdapter(private var list: MutableList<FruitDTO>) :
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     val fruit = list[position]
+    holder.fruitsIcon.setImageResource(R.drawable.frutas)
     holder.name.text = fruit.name
     holder.id.text = fruit.id.toString()
     holder.family.text = fruit.family

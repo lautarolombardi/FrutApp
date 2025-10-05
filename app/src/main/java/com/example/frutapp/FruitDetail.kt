@@ -1,6 +1,7 @@
 package com.example.frutapp
 
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -20,7 +21,6 @@ class FruitDetail : AppCompatActivity() {
     val bundle: Bundle? = intent.extras
     if (bundle != null) {
       val intentNameValue = bundle?.getString("name")
-      val intentEmoji = bundle?.getString("emoji")
 
       val intentFamilyValue = bundle?.getString("family")
       val intentGenusValue = bundle?.getString("genus")
@@ -33,8 +33,8 @@ class FruitDetail : AppCompatActivity() {
       val intentSugarValue = bundle?.getDouble("sugar")
 
 
-      val emoji: TextView = findViewById(R.id.tvEmoji)
-      emoji.text = intentEmoji.toString()
+      val fruitsIcon: ImageView = findViewById(R.id.ivFruitsIcon)
+      fruitsIcon.setImageResource(R.drawable.frutas)
 
       val name: TextView = findViewById(R.id.tvNameValue)
       name.text = intentNameValue.toString()

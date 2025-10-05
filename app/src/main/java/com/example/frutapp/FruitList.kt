@@ -7,6 +7,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +25,7 @@ import retrofit2.Response
 
 class FruitList : AppCompatActivity() {
   private lateinit var fruitAdapter: FruitAdapter
+  private lateinit var progressBar: ProgressBar
   private val fruitList = mutableListOf<FruitDTO>()
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -37,6 +40,7 @@ class FruitList : AppCompatActivity() {
     }
 
     val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewFruits)
+    progressBar = findViewById(R.id.progressBar)
     recyclerView.layoutManager = LinearLayoutManager(this)
 
     fruitAdapter = FruitAdapter(mutableListOf())
@@ -45,8 +49,11 @@ class FruitList : AppCompatActivity() {
     val api = RetrofitClient.retrofit.create(ApiService::class.java)
     val callGetAllFruits = api.getAllFruits()
 
+    progressBar.visibility = View.VISIBLE  // 👈 Mostrar loading
+
     callGetAllFruits.enqueue(object : retrofit2.Callback<List<FruitDTO>> {
       override fun onResponse(call: Call<List<FruitDTO>>, response: Response<List<FruitDTO>>) {
+        progressBar.visibility = View.GONE  // 👈 Ocultar loading
         if (response.isSuccessful) {
           val fruits = response.body() ?: emptyList()
           fruitList.clear()
@@ -56,6 +63,7 @@ class FruitList : AppCompatActivity() {
       }
 
       override fun onFailure(call: Call<List<FruitDTO>>, t: Throwable) {
+        progressBar.visibility = View.GONE  // 👈 Ocultar también si hay error
         t.printStackTrace()
       }
     })

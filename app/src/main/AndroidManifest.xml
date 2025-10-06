@@ -15,9 +15,7 @@
         android:theme="@style/Theme.FrutApp">
         <activity
             android:name=".RegisterActivity" />
-        <activity
-            android:name=".FruitDetail"
-            android:exported="false" />
+
         <activity
             android:name=".FruitList"
             android:exported="false" />

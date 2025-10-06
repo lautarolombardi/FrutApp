@@ -1,28 +1,25 @@
-import android.content.Intent
+// Archivo: FruitAdapter.kt
+
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.frutapp.Fruit
-import com.example.frutapp.FruitDetail
+import com.example.frutapp.OnFruitClickListener
 import com.example.frutapp.R
 import com.example.frutapp.data.model.FruitDTO
 
-class FruitAdapter(private var list: MutableList<FruitDTO>) :
-  RecyclerView.Adapter<FruitAdapter.ViewHolder>() {
+// El constructor ahora pide la lista y un "listener" (el notificador)
+class FruitAdapter(
+  private var fruitList: MutableList<FruitDTO>,
+  private val listener: OnFruitClickListener
+) : RecyclerView.Adapter<FruitAdapter.ViewHolder>() {
 
   class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val fruitsIcon: ImageView = view.findViewById(R.id.ivFruitsIcon)
-
     val name: TextView = view.findViewById(R.id.tvName)
-
-    val id: TextView = view.findViewById(R.id.tvId)
-    val family: TextView = view.findViewById(R.id.tvFamily)
-    val order: TextView = view.findViewById(R.id.tvOrder)
-    val genus: TextView = view.findViewById(R.id.tvGenus)
-
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,38 +29,34 @@ class FruitAdapter(private var list: MutableList<FruitDTO>) :
   }
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-    val fruit = list[position]
+    val fruit = fruitList[position]
     holder.fruitsIcon.setImageResource(R.drawable.frutas)
     holder.name.text = fruit.name
-    holder.id.text = fruit.id.toString()
-    holder.family.text = fruit.family
-    holder.order.text = fruit.order
-    holder.genus.text = fruit.genus
 
+    // ¡Este es el gran cambio!
+    // En lugar de crear un Intent, ahora crea un Bundle y llama al listener.
     holder.itemView.setOnClickListener {
-      val context = holder.itemView.context
-      val intent = Intent(context, FruitDetail::class.java)
-      intent.putExtra("id", fruit.id)
-      intent.putExtra("name", fruit.name)
-      intent.putExtra("family", fruit.family)
-      intent.putExtra("order", fruit.order)
-      intent.putExtra("genus", fruit.genus)
-      intent.putExtra("sugar", fruit.nutritions.sugar)
-      intent.putExtra("protein", fruit.nutritions.protein)
-      intent.putExtra("carbohydrates", fruit.nutritions.carbohydrates)
-      intent.putExtra("fat", fruit.nutritions.fat)
-      intent.putExtra("calories", fruit.nutritions.calories)
-      context.startActivity(intent)
+      val bundle = Bundle().apply {
+        putString("name", fruit.name)
+        putString("family", fruit.family)
+        putString("order", fruit.order)
+        putString("genus", fruit.genus)
+        putDouble("calories", fruit.nutritions.calories.toDouble()) // Convertimos a Double por seguridad
+        putDouble("fat", fruit.nutritions.fat)
+        putDouble("sugar", fruit.nutritions.sugar)
+        putDouble("carbohydrates", fruit.nutritions.carbohydrates)
+        putDouble("protein", fruit.nutritions.protein)
+      }
+      // Avisa a la Activity que se hizo clic y le pasa los datos
+      listener.onFruitClick(bundle)
     }
-
   }
 
-  override fun getItemCount() = list.size
+  override fun getItemCount() = fruitList.size
 
-  fun updateData(newUsers: List<FruitDTO>) {
-    list.clear()           // limpiamos la lista
-    list.addAll(newUsers)  // agregamos los nuevos datos
-    notifyDataSetChanged()  // notificamos al adapter
+  fun updateData(newFruits: List<FruitDTO>) {
+    fruitList.clear()
+    fruitList.addAll(newFruits)
+    notifyDataSetChanged()
   }
-
 }

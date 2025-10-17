@@ -15,6 +15,16 @@ import com.example.frutapp.utils.checkPassword
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
+import androidx.activity.result.contract.ActivityResultContracts
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,15 +34,42 @@ class MainActivity : AppCompatActivity() {
 
   private val PREFS_NAME = "UserPrefs"
   private val PREF_USERNAME = "username"
+  private val CHANNEL_ID = "REMINDER_CHANNEL"
+  private val NOTIFICATION_ID = 101
+
+  private val requestPermissionLauncher =
+    registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+      if (isGranted) {
+        sendPersistentNotification(
+          "CREDENTIALS SAVED",
+          "The system will now remember your username and password for automatic login."
+        )
+      } else {
+        Toast.makeText(this, "Notification permission denied.", Toast.LENGTH_SHORT).show()
+      }
+    }
+
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     checkForRememberedUser()
+    createNotificationChannel()
     setContentView(R.layout.activity_main)
 
     usernameEditText = findViewById(R.id.etUserLogIn)
     passwordEditText = findViewById(R.id.etPasswordLogIn)
     rememberMeCheckBox = findViewById(R.id.cbRememberUser)
+
+    rememberMeCheckBox.setOnCheckedChangeListener { _, isChecked ->
+      if(isChecked){
+        checkAndSendNotification(
+          "CREDENTIALS SAVED",
+          "The system will now remember your username and password for automatic login."
+        )
+      }else{
+        Toast.makeText(this, "Notification: Credentials will NOT be saved.", Toast.LENGTH_SHORT).show()
+      }
+    }
 
     val loginBtn = findViewById<Button>(R.id.btnLogIn)
     val registerTextView = findViewById<TextView>(R.id.tvDontHaveAccount)
@@ -107,5 +144,48 @@ class MainActivity : AppCompatActivity() {
     startActivity(intent)
     finish()
   }
-}
 
+  private fun checkAndSendNotification(title: String, content: String) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      if(ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED){
+        sendPersistentNotification(title, content)
+      }else{
+        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+      }
+    } else{
+      sendPersistentNotification(title, content)
+    }
+  }
+
+  private fun createNotificationChannel(){
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+      val name = "Session Reminders"
+      val descriptionText = "Notifications related to saved login credentials."
+      val importance = NotificationManager.IMPORTANCE_DEFAULT
+
+      val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+        description = descriptionText
+      }
+
+      val notificationManager: NotificationManager =
+        getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+      notificationManager.createNotificationChannel(channel)
+    }
+  }
+
+  @SuppressLint("MissingPermission")
+  private fun sendPersistentNotification(title: String, content: String){
+    val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+      .setSmallIcon(R.drawable.ic_remember_me)
+      .setContentTitle(title)
+      .setContentText(content)
+      .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+      .setAutoCancel(true)
+      .setStyle(NotificationCompat.BigTextStyle().bigText(content))
+
+    with(NotificationManagerCompat.from(this)){
+      notify(NOTIFICATION_ID, builder.build())
+    }
+  }
+
+}

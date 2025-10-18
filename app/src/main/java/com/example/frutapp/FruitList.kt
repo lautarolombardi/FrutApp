@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -23,7 +24,7 @@ import com.example.frutapp.data.model.FruitDTO
 import retrofit2.Call
 import retrofit2.Response
 
-class FruitList : AppCompatActivity() {
+class FruitList : AppCompatActivity(), FruitListFragment.OnUpdateClickListener {
   private lateinit var fruitAdapter: FruitAdapter
   private lateinit var progressBar: ProgressBar
   private val fruitList = mutableListOf<FruitDTO>()
@@ -46,14 +47,16 @@ class FruitList : AppCompatActivity() {
     fruitAdapter = FruitAdapter(mutableListOf())
     recyclerView.adapter = fruitAdapter
 
+    loadFruits()
+  }
+
+  private fun loadFruits() {
     val api = RetrofitClient.retrofit.create(ApiService::class.java)
     val callGetAllFruits = api.getAllFruits()
-
-    progressBar.visibility = View.VISIBLE  // 👈 Mostrar loading
-
+    progressBar.visibility = View.VISIBLE
     callGetAllFruits.enqueue(object : retrofit2.Callback<List<FruitDTO>> {
       override fun onResponse(call: Call<List<FruitDTO>>, response: Response<List<FruitDTO>>) {
-        progressBar.visibility = View.GONE  // 👈 Ocultar loading
+        progressBar.visibility = View.GONE
         if (response.isSuccessful) {
           val fruits = response.body() ?: emptyList()
           fruitList.clear()
@@ -63,7 +66,7 @@ class FruitList : AppCompatActivity() {
       }
 
       override fun onFailure(call: Call<List<FruitDTO>>, t: Throwable) {
-        progressBar.visibility = View.GONE  // 👈 Ocultar también si hay error
+        progressBar.visibility = View.GONE
         t.printStackTrace()
       }
     })
@@ -102,6 +105,11 @@ class FruitList : AppCompatActivity() {
     }
   }
 
+  override fun onUpdateClicked() {
+    Toast.makeText(this, "Actualizando lista...", Toast.LENGTH_SHORT).show()
+    loadFruits()
+  }
+
   private fun ordenarListaFrutas() {
     fruitList.sortBy { it.name }        // ordeno la lista local
     fruitAdapter.updateData(fruitList)  // actualizo el adapter
@@ -119,7 +127,6 @@ class FruitList : AppCompatActivity() {
     startActivity(intent)
     finish()
   }
-
 
 
 }

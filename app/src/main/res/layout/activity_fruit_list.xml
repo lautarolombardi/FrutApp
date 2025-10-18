@@ -8,10 +8,8 @@
     android:orientation="vertical"
     tools:context=".FruitList">
 
-    <!-- Toolbar arriba -->
     <include layout="@layout/toolbar" />
 
-    <!-- Contenedor principal con FrameLayout -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -23,23 +21,11 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <TextView
+            <fragment
+                android:id="@+id/fruitListFragment"
+                android:name="com.example.frutapp.FruitListFragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Fruit List"
-                android:textStyle="bold"
-                android:layout_marginBottom="10dp"
-                android:textSize="25sp"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Tap to see details of any fruit"
-                android:textSize="15sp"
-                android:textColor="@color/lightPurple" />
+                android:layout_height="wrap_content" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewFruits"
@@ -48,7 +34,6 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
 
-        <!-- Loading overlay -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="70dp"
